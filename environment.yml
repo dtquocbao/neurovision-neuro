@@ -1,0 +1,21 @@
+name: neuro-ai-brain-cell-atlas
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  # Core analysis (notebook 01)
+  - scanpy>=1.10
+  - pandas>=2.0
+  - numpy>=1.24
+  - matplotlib>=3.7
+  - scikit-learn>=1.3
+  # Notebooks
+  - jupyter
+  - ipykernel
+  # Planned: spatial omics
+  - squidpy>=1.4
+  # Allen Brain Cell Atlas downloads
+  - pip
+  - pip:
+      - git+https://github.com/AllenInstitute/abc_atlas_access.git
