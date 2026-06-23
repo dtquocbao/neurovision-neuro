@@ -1,0 +1,239 @@
+---
+title: "Forebrain-Enriched Neuroprotective Astrocytes in the Human Brain Atlas"
+subtitle: "Neuro-AI Brain Cell Atlas (Notebook 02)"
+author:
+  - "Neuro-AI Brain Cell Atlas Project"
+date: today
+date-format: "MMMM D, YYYY"
+keywords:
+  - astrocyte heterogeneity
+  - neuroprotective support score
+  - Alzheimer's disease
+  - Allen Brain Cell Atlas
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-fold: true
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Conference abstract
+
+**Background.** Astrocyte subtypes differ in regional distribution and in their capacity to support synaptic function, ion homeostasis, and neurovascular coupling. Whether a dedicated neuroprotective astrocyte program can be quantified in human whole-brain single-cell data—and whether it localizes to cognition-relevant forebrain regions—remains an active question in neurodegeneration research.
+
+**Methods.** Building on the annotated 50,000-nucleus subsample from Notebook 01 (`brain_non_neuronal_50k_annotated_umap.h5ad`), we focused on **Astrocyte_2** (*n* = 4,081 nuclei) versus canonical **Astrocyte** cells. We computed a **Neuroprotective Support Score** using Scanpy `score_genes` over ten astrocyte-support genes (*APOE*, *CLU*, *CST3*, *SPARCL1*, *AQP4*, *SLC1A2*, *SLC4A4*, *ATP1A2*, *GLUL*, *GJA1*), stratified all non-neuronal cell types by score quartile, mapped regional composition, re-ran differential expression (Astrocyte_2 vs Astrocyte), and tested score separation with a one-sided Mann–Whitney U test. A secondary **AD-associated gene score** (*APOE*, *CLU*, *CST3*, *AQP4*, *SLC1A2*, *SPARCL1*) was computed for cross-population comparison.
+
+**Results.** **Astrocyte_2** exhibited the highest Neuroprotective Support Score among all non-neuronal populations. **99.9%** of Astrocyte_2 nuclei fell in the highest quartile (Q4), compared with **2.9%** of canonical astrocytes. Regional analysis showed **51.5%** cerebral cortex, **27.9%** hippocampus, and **8.9%** amygdaloid complex—together **~88%** forebrain-associated divisions—with zero representation in cerebellum, myelencephalon, or spinal cord. Top differential markers included *SLC1A2* (log~2~ FC ≈ 19.7), *SPARCL1*, *SLC4A4*, *ATP1A2*, *CLU*, and *AQP4*. Mann–Whitney testing confirmed near-complete score separation from canonical astrocytes (median difference = **7.51** score units; rank-biserial *r* ≈ **−1.0**; *p* < 0.001).
+
+**Conclusions.** Astrocyte_2 represents a forebrain-enriched astrocyte state with a coherent neuroprotective-support transcriptional program. These findings are hypothesis-generating for Alzheimer's disease biology and motivate region-stratified follow-up (Notebook 03).
+
+---
+
+## Significance
+
+::: {.callout-note}
+## Take-home message
+
+Notebook 02 moves from **cluster discovery** (Notebook 01) to **quantitative characterization**. Astrocyte_2 is not merely marker-positive—it occupies the extreme tail of a composite neuroprotective score across the entire non-neuronal atlas, and it maps anatomically to cortex and hippocampus, the circuits most vulnerable in Alzheimer's disease.
+:::
+
+From a neuroscience perspective, the gene panel is biologically coherent:
+
+| Gene | Functional role |
+|------|-----------------|
+| *SLC1A2* (EAAT2) | Glutamate clearance at synapses |
+| *AQP4* | Water transport; glymphatic / neurovascular interface |
+| *SLC4A4* | Bicarbonate transport; pH homeostasis |
+| *SPARCL1* (Hevin) | Synapse formation and maturation |
+| *ATP1A2* | Na^+^/K^+^-ATPase; ionic homeostasis |
+| *GLUL* | Glutamine synthetase; glutamate–glutamine cycle |
+| *GJA1* (Connexin-43) | Astrocyte gap-junction coupling |
+| *APOE*, *CLU*, *CST3* | Lipid handling, chaperoning, cystatin C—AD-linked biology |
+
+---
+
+## Methods summary
+
+| Step | Detail |
+|------|--------|
+| **Input** | `data/processed/brain_non_neuronal_50k_annotated_umap.h5ad` (50,000 × 3,000 HVGs) |
+| **Target population** | Astrocyte_2 (*n* = 4,081) vs Astrocyte (*n* ≈ 8,100 in full atlas; paired subset for DE) |
+| **Neuroprotective score** | `score_genes`: 10-gene astrocyte-support panel (see above) |
+| **AD gene score** | `score_genes`: *APOE*, *CLU*, *CST3*, *AQP4*, *SLC1A2*, *SPARCL1* |
+| **Quartile analysis** | Population-wide Q1–Q4 bins; fraction per cell type |
+| **Regional composition** | Crosstab `cell_type` × `anatomical_division_label`, row-normalized |
+| **Differential expression** | `rank_genes_groups`: Astrocyte_2 vs Astrocyte reference |
+| **Statistics** | Mann–Whitney U (Astrocyte_2 > Astrocyte); rank-biserial correlation |
+| **Outputs** | Marker table → `results/astrocyte2_vs_astrocyte_markers.csv` |
+| **Reproducibility** | `notebooks/02_neuroprotective_astrocytes.ipynb` |
+
+---
+
+## Results
+
+### 1. Astrocyte_2 dominates the neuroprotective score landscape
+
+Violin plots of the Neuroprotective Support Score across all 11 annotated non-neuronal types show **Astrocyte_2** as a clear outlier with the highest median and tightest high-score distribution. Conventional astrocytes, oligodendrocytes, activated microglia, and endothelial cells cluster near the population median or below.
+
+::: {.callout-warning}
+## Circular scoring caveat
+
+Several genes in the score panel (*SLC1A2*, *SPARCL1*, *SLC4A4*, *AQP4*) are also top Astrocyte_2 marker genes. The score therefore **summarizes** the Astrocyte_2 program—it does not independently validate cluster identity. Interpretation should emphasize anatomical enrichment and cross-population rank, not p-values alone.
+:::
+
+### 2. Quartile enrichment — near-uniform occupancy of Q4
+
+| Cell type | Q1 (low) | Q2 | Q3 | Q4 (high) |
+|-----------|----------|-----|-----|-----------|
+| Astrocyte | 54.9% | 19.9% | 22.3% | 2.9% |
+| **Astrocyte_2** | **0.02%** | **0.02%** | **0.07%** | **99.9%** |
+| Activated Microglia | 44.9% | 28.7% | 23.7% | 2.7% |
+| Oligodendrocyte | 9.0% | 48.6% | 37.9% | 4.5% |
+| Pericyte | 0.08% | 0.08% | 1.4% | 98.5% |
+| Ependymal | 0% | 0% | 0.7% | 99.3% |
+
+Astrocyte_2 and Pericyte/Ependymal share high Q4 occupancy, but their marker profiles and regional distributions are distinct—Astrocyte_2 is the only population combining **forebrain anatomy** with **canonical astrocyte synaptic-support markers**.
+
+### 3. Forebrain regional enrichment
+
+Within Astrocyte_2 nuclei:
+
+| Anatomical division | Fraction |
+|---------------------|----------|
+| Cerebral cortex | **51.5%** |
+| Hippocampus | **27.9%** |
+| Amygdaloid complex | 8.9% |
+| Basal nuclei | 3.8% |
+| Hypothalamus | 2.7% |
+| Brainstem / cerebellum / spinal cord | **0%** |
+
+Cortex + hippocampus account for **~79%** of Astrocyte_2; including amygdala and basal forebrain raises forebrain-associated representation to **~88%**. This anatomical pattern aligns with the synaptic-density and cognitive-load gradients of the telencephalon and is consistent with the forebrain-specialization hypothesis from Notebook 01.
+
+### 4. Differential expression confirms a mature support program
+
+Top Astrocyte_2 markers vs canonical Astrocyte (Wilcoxon, all *p*~adj~ = 0):
+
+| Rank | Gene | log~2~ FC | Biological note |
+|------|------|-----------|-----------------|
+| 1 | *SLC1A2* | 19.7 | Glutamate transporter EAAT2 |
+| 2 | *ADGRV1* | 19.5 | Adhesion GPCR; synaptic context |
+| 3 | *SPARCL1* | 15.3 | Synaptic organizer (Hevin) |
+| 4 | *SLC4A4* | 17.1 | NBCe1 bicarbonate cotransporter |
+| 5 | *ATP1A2* | 16.1 | Astrocytic Na/K pump |
+| 11 | *CLU* | 12.4 | Clusterin; stress / AD association |
+| 16 | *AQP4* | 13.3 | Perivascular astrocyte endfeet |
+| — | *SLC7A11* | 14.1 | Cystine/glutamate antiporter (antioxidant) |
+
+Heatmap visualization of *SLC1A2*, *SPARCL1*, *SLC4A4*, *AQP4*, *APOE*, *CLU*, and *CST3* across astrocyte subtypes confirms elevated expression in Astrocyte_2 relative to Astrocyte.
+
+### 5. Statistical separation from canonical astrocytes
+
+| Metric | Value |
+|--------|-------|
+| Test | Mann–Whitney U (Astrocyte_2 > Astrocyte) |
+| *p*-value | < 0.001 |
+| Median score difference | **7.51** units |
+| Rank-biserial correlation | **≈ −1.0** (near-complete separation) |
+
+The effect size is large enough that visualization alone would suffice for exploratory analysis; the formal test documents reproducibility for the report.
+
+### 6. AD-associated gene score
+
+A secondary score restricted to six AD-linked astrocyte genes (*APOE*, *CLU*, *CST3*, *AQP4*, *SLC1A2*, *SPARCL1*) reproduced the same pattern: **Astrocyte_2** ranked highest among non-neuronal types. This supports—but does not prove—a link between the Astrocyte_2 program and molecular pathways implicated in Alzheimer's disease genetics.
+
+---
+
+## Professor's assessment
+
+::: {.callout-important}
+## What you did well
+
+1. **Clear analytical arc** — load annotated object → define score → quantify → localize → validate statistically.
+2. **Appropriate skepticism** — you explicitly note circularity in the scoring panel and treat the Mann–Whitney result as descriptive confirmation, not independent discovery.
+3. **Biological integration** — regional forebrain enrichment is interpreted alongside synaptic-support markers, not as a standalone bar chart.
+4. **Publication-ready outputs** — marker CSV export and structured interpretation blocks show pipeline maturity.
+:::
+
+::: {.callout-caution}
+## What to tighten before a meeting or manuscript
+
+1. **Report absolute cell counts** in every figure legend (Astrocyte_2 = 4,081 / 50,000 = 8.2% of subsample).
+2. **Pericyte/Ependymal Q4 cells** — briefly acknowledge these high-scoring non-astrocyte populations to preempt reviewer questions.
+3. **Donor and batch effects** — the WHB atlas spans many donors; stratify Astrocyte_2 score by `library_label` before claiming regional biology.
+4. **Connect to Allen taxonomy** — cross-reference official WHB cluster names rather than relying solely on manual `Astrocyte_2` labels.
+:::
+
+---
+
+## Conclusions
+
+1. **Astrocyte_2 is quantitatively distinct.** It occupies the extreme high tail of a ten-gene neuroprotective support score across the full non-neuronal atlas subsample.
+
+2. **Anatomy matches function.** Cortex and hippocampus together harbor ~80% of Astrocyte_2 nuclei; hindbrain and spinal cord are absent.
+
+3. **Transcriptional identity is synaptic-support astrocyte.** *SLC1A2*, *SPARCL1*, *SLC4A4*, *AQP4*, *ATP1A2*, and *CLU* form a coherent mature astrocyte program—not reactive gliosis (*GFAP* was not a top discriminator in this expanded panel).
+
+4. **AD relevance is plausible but not proven.** Elevated *APOE*, *CLU*, and *CST3* motivate Notebook 03, where AD risk-gene programs should be tested independently of the discovery markers.
+
+5. **Recommended next step.** Subset cortical and hippocampal Astrocyte_2; correlate AD gene scores with anatomical division, donor age/sex, and Allen taxonomy labels; compare against disease atlases when available.
+
+---
+
+## Limitations
+
+- **Subsampling:** 50,000 of 888,263 non-neuronal nuclei; Astrocyte_2 (*n* = 4,081) is well-powered but rare types may be unstable.
+- **Circular gene scoring:** Overlap between marker genes and score panel inflates quartile enrichment metrics.
+- **Log~2~ normalized expression:** Scores reflect relative expression within the subsample, not absolute protein levels.
+- **Dissection-based regions:** `anatomical_division_label` reflects tissue dissection, not single-cell spatial context.
+- **No disease cohort:** WHB data are from neurotypical donors; neuroprotective scoring in AD brains requires external datasets.
+
+---
+
+## Future directions
+
+- Notebook 03: AD risk-gene enrichment independent of discovery markers
+- Donor-level mixed models for Astrocyte_2 abundance and score
+- Integration with Allen MERFISH for in situ validation of cortex/hippocampus enrichment
+- Neuron–astrocyte ligand–receptor analysis (e.g., *SPARCL1*–synaptic partners)
+- Export UMAP/score violin figures to `reports/figures/` for poster submission
+
+---
+
+## Render this report
+
+From the project root (Quarto + LaTeX for PDF):
+
+```bash
+quarto render reports/neuroprotective_astrocytes_report.qmd --to pdf
+quarto render reports/neuroprotective_astrocytes_report.qmd --to html
+```
+
+---
+
+## References
+
+**Primary data**
+
+1. Siletti K, et al. Transcriptomic diversity of cell types across the adult human brain. *Nature*. 2023.
+2. Allen Institute for Brain Science. [WHB-10X clustering](https://alleninstitute.github.io/abc_atlas_access/descriptions/WHB-10X-clustering.html). *abc_atlas_access* documentation.
+
+**Prior project output**
+
+3. Notebook 01 conference report: `reports/brain_cell_atlas_report.qmd` — initial Astrocyte_2 discovery, GO enrichment, and regional composition.
+
+**Software**
+
+4. Wolf FA, et al. SCANPY: large-scale single-cell gene expression data analysis. *Genome Biology*. 2018.
+5. Mann HB, Whitney DR. On a test of whether one of two random variables is stochastically larger than the other. *Annals of Mathematical Statistics*. 1947.
