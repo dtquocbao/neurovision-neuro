@@ -6,6 +6,12 @@
     "normal": { "median": 0.300, "n": 32830 },
     "dementia": { "median": 0.197, "n": 34589 }
   },
+  "statistics": {
+    "normal_vs_dementia": {
+      "p": "3.96e-177",
+      "rank_biserial": -0.126
+    }
+  },
   "adnc_medians": {
     "Not AD": 0.302,
     "Low": 0.264,
@@ -19,6 +25,13 @@
     "Braak IV": 0.25,
     "Braak V": 0.22,
     "Braak VI": 0.20
+  },
+  "apoe4": {
+    "carrier_median": 0.201,
+    "carrier_n": 20395,
+    "non_carrier_median": 0.264,
+    "non_carrier_n": 47024,
+    "p": "8.22e-47"
   },
   "astrocyte_2_like_fraction": {
     "normal": 0.28,

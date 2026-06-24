@@ -8,13 +8,14 @@ Interactive research platform wrapping Brain Cell Atlas notebooks NB01–NB07.
 
 | Route | Feature |
 |-------|---------|
-| `/` | Landing page with NB01→NB07 narrative |
-| `/atlas` | UMAP browser (precomputed WHB 50k subsample) |
+| `/` | Science-first landing — central finding + 4 key result cards |
+| `/findings` | Full NB01–07 scientific results (committee-readable) |
+| `/atlas` | Guided 4-step UMAP story + free explore |
 | `/score` | AD support score from CSV/h5ad upload |
 | `/classifier` | scVI + MLP cell-state predictor (NB04) |
-| `/disease` | Disease stratification with SEA-AD reference (NB06) |
-| `/lr` | LIANA ligand-receptor explorer (NB07) |
-| `/about` | Project story + references |
+| `/disease` | SEA-AD reference panel + upload comparison (NB06) |
+| `/lr` | L-R explorer with biological annotations (NB07) |
+| `/about` | Project narrative + references |
 
 ## Quick start
 
@@ -83,4 +84,4 @@ platform/
     └── src/pages/           # Landing, Atlas, Score, Classifier, Disease, LR, About
 ```
 
-See `neurovision_neuro_prd.md` for full product spec.
+See `neurovision_neuro_prd_v2.md` for the science-first product spec (v2).

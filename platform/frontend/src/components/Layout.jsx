@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
-import { Brain, Activity, Upload, GitBranch, Info, Layers, Heart } from "lucide-react";
+import { Brain, BookOpen, Activity, Upload, GitBranch, Info, Layers, Heart } from "lucide-react";
 
 const links = [
   { to: "/", label: "Home", icon: Brain, end: true },
+  { to: "/findings", label: "Findings", icon: BookOpen },
   { to: "/atlas", label: "Atlas", icon: Activity },
   { to: "/score", label: "AD Score", icon: Upload },
   { to: "/classifier", label: "Classifier", icon: Layers },

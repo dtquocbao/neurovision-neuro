@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Landing from "./pages/Landing";
+import Findings from "./pages/Findings";
 import Atlas from "./pages/Atlas";
 import Score from "./pages/Score";
 import Classifier from "./pages/Classifier";
@@ -13,6 +14,7 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/findings" element={<Findings />} />
         <Route path="/atlas" element={<Atlas />} />
         <Route path="/score" element={<Score />} />
         <Route path="/classifier" element={<Classifier />} />

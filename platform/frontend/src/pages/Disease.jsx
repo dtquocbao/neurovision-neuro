@@ -4,6 +4,101 @@ import UploadPanel from "../components/UploadPanel";
 import ViolinPlot from "../components/ViolinPlot";
 import { ADNCHeatmap, CPSScatter, GradientChart } from "../components/DiseaseCharts";
 
+function SeaADReferencePanel({ ref }) {
+  if (!ref) return null;
+
+  return (
+    <section className="card border-amber-500/30 space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-amber-200">SEA-AD Reference Cohort (NB06)</h3>
+        <p className="mt-2 text-sm leading-relaxed text-slate-300">
+          In the SEA-AD MTG cohort (84 donors, 67,419 astrocytes), the AD-associated
+          neuroprotective program is significantly lower in dementia donors and declines
+          with increasing neuropathological severity. Upload your own data below to compare
+          against this reference.
+        </p>
+      </div>
+
+      <div>
+        <h4 className="text-sm font-medium text-white">Normal vs Dementia</h4>
+        <table className="mt-2 w-full text-sm">
+          <thead>
+            <tr className="text-slate-400">
+              <th className="py-1 text-left">Group</th>
+              <th className="py-1">Median AD score</th>
+              <th className="py-1">n</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(ref.disease_summary ?? {}).map(([grp, stats]) => (
+              <tr key={grp} className="border-t border-slate-700">
+                <td className="py-2 capitalize text-white">{grp}</td>
+                <td className="py-2 text-blue-300">{stats.median?.toFixed(3)}</td>
+                <td className="py-2 text-slate-400">{stats.n?.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {ref.statistics?.normal_vs_dementia && (
+          <p className="mt-2 text-xs text-slate-500">
+            p = {ref.statistics.normal_vs_dementia.p}, rank-biserial r ={" "}
+            {ref.statistics.normal_vs_dementia.rank_biserial}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <h4 className="text-sm font-medium text-white">ADNC gradient</h4>
+        <table className="mt-2 w-full text-sm">
+          <thead>
+            <tr className="text-slate-400">
+              <th className="py-1 text-left">ADNC</th>
+              <th className="py-1">Median score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(ref.adnc_medians ?? {}).map(([level, median]) => (
+              <tr key={level} className="border-t border-slate-700">
+                <td className="py-2 text-white">{level}</td>
+                <td className="py-2 text-blue-300">{median.toFixed(3)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {ref.apoe4 && (
+        <div>
+          <h4 className="text-sm font-medium text-white">APOE4 effect</h4>
+          <p className="mt-2 text-sm text-slate-300">
+            Carrier median: <strong className="text-blue-300">{ref.apoe4.carrier_median}</strong>{" "}
+            (n={ref.apoe4.carrier_n?.toLocaleString()}) · Non-carrier median:{" "}
+            <strong className="text-blue-300">{ref.apoe4.non_carrier_median}</strong>{" "}
+            (n={ref.apoe4.non_carrier_n?.toLocaleString()})
+          </p>
+          <p className="mt-1 text-xs text-slate-500">p = {ref.apoe4.p}</p>
+        </div>
+      )}
+
+      <p className="text-sm text-slate-400">
+        Braak stage: scores decline from Braak 0 → Braak VI (Kruskal-Wallis p &lt; 0.001)
+      </p>
+
+      {ref.braak_medians && (
+        <GradientChart
+          data={Object.entries(ref.braak_medians).map(([label, median]) => ({
+            label,
+            median,
+            mean: median,
+            n: 0,
+          }))}
+          title="SEA-AD Braak stage gradient (reference medians)"
+        />
+      )}
+    </section>
+  );
+}
+
 export default function Disease() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -33,31 +128,30 @@ export default function Disease() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Disease Comparison Dashboard</h2>
+        <h2 className="text-2xl font-bold text-white">Disease Comparison</h2>
         <p className="text-slate-400">
-          Stratify AD support score by disease metadata (NB06). Upload CSV/h5ad with score column or expression to compute score.
+          The neuroprotective astrocyte program declines with AD pathology (NB06). Compare your
+          cohort against the SEA-AD reference below.
         </p>
       </div>
 
-      {ref && (
-        <div className="card border-amber-500/30 text-sm text-slate-300">
-          <strong className="text-amber-200">SEA-AD reference (NB06):</strong>{" "}
-          normal median {ref.disease_summary?.normal?.median?.toFixed(3)} vs dementia{" "}
-          {ref.disease_summary?.dementia?.median?.toFixed(3)} (67k astrocytes, 84 donors)
-        </div>
-      )}
+      <SeaADReferencePanel ref={ref} />
 
-      <UploadPanel
-        onUpload={handleUpload}
-        loading={loading}
-        hint="Include metadata: disease, Braak stage, ADNC, APOE4 status, CPS. Or provide expression to auto-compute AD score."
-      />
+      <div>
+        <h3 className="mb-3 text-lg font-semibold text-white">Compare your data</h3>
+        <UploadPanel
+          onUpload={handleUpload}
+          loading={loading}
+          hint="Include metadata: disease, Braak stage, ADNC, APOE4 status, CPS. Or provide expression to auto-compute AD score."
+        />
+      </div>
 
       {loading && <p className="text-blue-400">Analyzing disease stratification…</p>}
       {error && <div className="card text-red-400">{typeof error === "string" ? error : JSON.stringify(error)}</div>}
 
       {result && (
         <>
+          <h3 className="text-lg font-semibold text-white">Your upload vs SEA-AD reference</h3>
           <div className="grid gap-4 md:grid-cols-3">
             <div className="card text-center">
               <p className="text-xs text-slate-400">Cells analyzed</p>
@@ -82,7 +176,6 @@ export default function Disease() {
               <ViolinPlot violinData={result.disease_violin} />
               {result.disease_summary && (
                 <div className="card overflow-x-auto">
-                  <h3 className="mb-3 text-sm font-medium text-slate-300">Disease summary vs SEA-AD reference</h3>
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-slate-400">
@@ -98,7 +191,7 @@ export default function Disease() {
                           <td className="py-2 text-white">{grp}</td>
                           <td className="py-2 text-blue-300">{stats.median.toFixed(3)}</td>
                           <td className="py-2 text-amber-300">
-                            {ref?.disease_summary?.[grp]?.median?.toFixed(3) ?? "—"}
+                            {ref?.disease_summary?.[grp]?.median?.toFixed(3) ?? "-"}
                           </td>
                           <td className="py-2 text-slate-400">{stats.n}</td>
                         </tr>
@@ -113,7 +206,7 @@ export default function Disease() {
           {result.braak_gradient && (
             <GradientChart
               data={result.braak_gradient}
-              title="Braak stage gradient"
+              title="Your Braak stage gradient"
               reference={ref?.braak_medians}
             />
           )}
