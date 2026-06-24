@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Activity, Upload, GitBranch, ArrowRight, Cpu, HeartPulse } from "lucide-react";
+import { Activity, Upload, GitBranch, ArrowRight, Layers, Heart } from "lucide-react";
 
 const stats = [
   { label: "Nuclei (WHB)", value: "888k" },
@@ -23,13 +23,13 @@ const tools = [
   },
   {
     to: "/classifier",
-    icon: Cpu,
+    icon: Layers,
     title: "Cell State Classifier",
     desc: "scVI + MLP predicts Astrocyte_2 / Astrocyte / Other (NB04, AUROC 0.999).",
   },
   {
     to: "/disease",
-    icon: HeartPulse,
+    icon: Heart,
     title: "Disease Comparison",
     desc: "Stratify AD score by Braak, ADNC, APOE4 with SEA-AD reference overlay (NB06).",
   },

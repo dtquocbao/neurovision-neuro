@@ -4,7 +4,7 @@ import {
 
 const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#a855f7", "#06b6d4"];
 
-export default function GradientChart({ data, title, yLabel = "Median AD score", reference }) {
+export function GradientChart({ data, title, yLabel = "Median AD score", reference }) {
   if (!data?.length) return null;
 
   const chartData = data.map((d) => ({
