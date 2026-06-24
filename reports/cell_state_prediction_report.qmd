@@ -1,0 +1,105 @@
+---
+title: "Donor-Aware scVI Classification of AD-Associated Astrocyte States"
+subtitle: "Conference Summary - Neuro-AI Brain Cell Atlas (Notebook 04)"
+author:
+  - "Neuro-AI Brain Cell Atlas Project"
+date: today
+date-format: "MMMM D, YYYY"
+keywords:
+  - scVI
+  - cell-state prediction
+  - SHAP
+  - astrocyte heterogeneity
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-fold: true
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Conference abstract
+
+**Background.** If Astrocyte_2 represents a stable transcriptional state, it should be predictable from expression in donors never seen during training and interpretable latent dimensions should recover discovery markers from NB01–02.
+
+**Methods.** On the 50k WHB subsample, we defined a 3-class label (Astrocyte_2 / Astrocyte / Other), split **606 donors** 80/10/10 by `library_label`, trained **scVI** (batch_key = library_label, 20 latent dims), and fit an **MLP classifier** (64→32, ReLU) on scVI embeddings. We evaluated on held-out test donors (AUROC, confusion matrix) and applied **SHAP** to identify biologically interpretable latent dimensions, correlating top dims with gene expression.
+
+**Results.** scVI UMAP showed discrete Astrocyte_2 separation after batch correction across 368 astrocyte-relevant donors. Held-out test performance: Astrocyte_2 precision **0.94**, recall **0.91**, F1 **0.93**; **macro AUROC 0.9991**. SHAP top latent dim **z19** correlated with *SLC1A2* (*r* ≈ 0.52), *CST3* (*r* ≈ 0.46), *KCNMA1*, and *HIF1A* independently rediscovering NB01–02 marker genes.
+
+**Conclusions.** The Astrocyte_2 program is learnable, donor-generalizable, and biologically interpretable in batch-corrected latent space.
+
+---
+
+## Significance
+
+::: {.callout-note}
+## Take-home message
+
+The critical finding is not AUROC ≈ 1.0, it is that SHAP-guided gene correlation recovers *SLC1A2* and *CST3* without using marker genes in the classifier input, converging with DE (NB01), scoring (NB02–03), and disease loss (NB06).
+:::
+
+---
+
+## Methods summary
+
+| Step | Detail |
+|------|--------|
+| **Input** | `brain_non_neuronal_50k_annotated_umap.h5ad` |
+| **Split** | Donor-aware 80/10/10 by `library_label` |
+| **Embedding** | scVI, batch_key = library_label → `X_scVI` (20 dims) |
+| **Classifier** | MLPClassifier (64→32), early stopping |
+| **Interpretability** | SHAP on latent dims → gene correlation |
+| **Output** | `models/scvi_nb04/` |
+| **Reproducibility** | `notebooks/04_cell_state_prediction_in_human_astrocytes.ipynb` |
+
+---
+
+## Classification results (held-out donors)
+
+| Class | Precision | Recall | F1 | *n* (test) |
+|-------|-----------|--------|-----|------------|
+| Astrocyte | 1.00 | 0.99 | 1.00 | 355 |
+| **Astrocyte_2** | **0.94** | **0.91** | **0.93** | 375 |
+| Other | 0.99 | 0.99 | 0.99 | 3,723 |
+| **Macro avg** | **0.98** | **0.97** | **0.97** | 4,453 |
+
+**Macro AUROC: 0.9991**
+
+34 Astrocyte_2 → Other misclassifications (9%) likely represent transitional cells at the latent-space boundary.
+
+---
+
+## SHAP interpretability
+
+| Rank | Latent dim | SHAP importance | Top correlated genes |
+|------|------------|-----------------|-------------------|
+| 1 | z19 | 0.057 | *SLC1A2*, *CST3*, *KCNMA1*, *HIF1A* |
+| 2 | z12 | - | *APOE*, *AQP4* |
+| 3 | z7 | - | *SPARCL1*, *SLC4A4* |
+
+---
+
+## Limitations
+
+- scVI trained on log-normalized matrix (not raw counts), ELBO interpretation caveat
+- MLP operates on compressed latent space; SHAP → gene links are indirect
+- No cross-dataset transfer to SEA-AD (addressed in NB06 via score threshold)
+- No spatial validation
+
+---
+
+## References
+
+1. Notebooks 01–03 reports; Wolf FA et al. SCANPY *Genome Biology* 2018
+2. Gayoso A et al. scvi-tools; Lundberg & Lee SHAP *NeurIPS* 2017

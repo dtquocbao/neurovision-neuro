@@ -1,0 +1,114 @@
+---
+title: "AD-Associated Gene Enrichment in Forebrain Astrocyte_2"
+subtitle: "Conference Summary - Neuro-AI Brain Cell Atlas (Notebook 03)"
+author:
+  - "Neuro-AI Brain Cell Atlas Project"
+date: today
+date-format: "MMMM D, YYYY"
+keywords:
+  - Alzheimer's disease
+  - astrocyte heterogeneity
+  - donor stratification
+  - Allen Brain Cell Atlas
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-fold: true
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Conference abstract
+
+**Background.** Notebook 02 established that Astrocyte_2 carries a neuroprotective transcriptional program enriched for AD-linked genes. Whether this AD-associated score replicates across brain regions and donors, or reflects batch artifacts, was untested.
+
+**Methods.** We applied a 6-gene **AD support score** (*APOE*, *CLU*, *CST3*, *AQP4*, *SLC1A2*, *SPARCL1*) to the 50,000-nucleus WHB subsample. We computed quartile enrichment, Mann–Whitney U (Astrocyte_2 vs Astrocyte), regional stratification within Astrocyte_2, donor-level summaries across 368 `library_label` donors, and a donor × region heatmap (top 20 donors).
+
+**Results.** **96%** of Astrocyte_2 nuclei occupied Q4 vs **13%** of canonical astrocytes (7.4-fold enrichment). Mann–Whitney: Astrocyte_2 median **5.604** vs Astrocyte **−0.444** (rank-biserial *r* = **0.967**). Within Astrocyte_2, cerebral cortex (median **5.86**) and hippocampus (**5.73**) scored highest; hypothalamus was **3.2 units** lower. The cortex/hippocampus > hypothalamus gradient replicated across independent donors. AD and neuroprotective scores were perfectly correlated (Spearman *r* = 1.0).
+
+**Conclusions.** The AD-associated astrocyte program is forebrain-concentrated and donor-replicated. NB03's contribution is stratification, not a new score definition.
+
+---
+
+## Significance
+
+::: {.callout-note}
+## Take-home message
+
+Astrocyte_2 is not only neuroprotective (NB02), it dominates the AD gene score landscape across the entire non-neuronal atlas, with a regional gradient that mirrors forebrain vulnerability in Alzheimer's disease.
+:::
+
+---
+
+## Methods summary
+
+| Step | Detail |
+|------|--------|
+| **Input** | `brain_non_neuronal_50k_annotated_umap.h5ad` |
+| **Score** | `score_genes`: 6-gene AD panel (NB02 secondary score) |
+| **Quartile** | Population-wide Q1–Q4; fraction per cell type |
+| **Statistics** | Mann–Whitney U; rank-biserial *r* |
+| **Stratification** | Region (n ≥ 20); 368 donors; donor × region heatmap |
+| **Reproducibility** | `notebooks/03_AD_risk_gene_enrichment_in_Astrocyte_2.ipynb` |
+
+---
+
+## Key results
+
+### Quartile dominance
+
+| Cell type | Q4 fraction |
+|-----------|-------------|
+| **Astrocyte_2** | **0.96** |
+| Pericyte | 0.95 |
+| Ependymal | 0.79 |
+| Astrocyte | 0.13 |
+| Activated Microglia | 0.05 |
+
+### Regional gradient (Astrocyte_2, n ≥ 20)
+
+| Region | Median AD score | *n* |
+|--------|-----------------|-----|
+| Cerebral cortex | 5.86 | 2,102 |
+| Hippocampus | 5.73 | 1,137 |
+| Amygdaloid complex | 4.70 | 365 |
+| Hypothalamus | ~2.6 | - |
+
+### Donor variability
+
+Across 368 donors: per-donor median range **4.7 score units**, std **1.21**, substantial inter-individual variability without linked age/sex covariates in this object.
+
+---
+
+## Professor's assessment
+
+**Strengths:** Regional + donor stratification directly addresses the batch-artifact concern from NB02. Honest circularity caveat (score genes overlap markers).
+
+**Tighten:** Donor-level mixed models; link Allen donor metadata (NB05); external disease validation (NB06).
+
+---
+
+## Limitations
+
+- Circular 6-gene panel overlaps Astrocyte_2 discovery markers
+- Cell-level statistics across 368 donors inflate significance
+- Dissection-based regions, not spatial resolution
+- Neurotypical WHB donors only
+
+---
+
+## References
+
+1. Notebooks 01–02 conference reports (`reports/brain_cell_atlas_report.qmd`, `reports/neuroprotective_astrocytes_report.qmd`)
+2. Siletti K, et al. *Nature* 2023 - Allen WHB atlas

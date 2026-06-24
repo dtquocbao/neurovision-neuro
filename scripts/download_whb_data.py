@@ -1,7 +1,7 @@
 """Download Allen Brain Cell Atlas WHB-10Xv3 data into data/processed/.
 
 The WHB-10X clustering release stores:
-  - Cell/gene metadata and taxonomy (CSV) — see WHB-10X-clustering docs
+  - Cell/gene metadata and taxonomy (CSV) - see WHB-10X-clustering docs
   - Expression matrices as h5ad (Neurons + Nonneurons, raw + log2)
 
 Docs: https://alleninstitute.github.io/abc_atlas_access/descriptions/WHB-10X-clustering.html

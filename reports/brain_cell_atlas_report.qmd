@@ -46,7 +46,7 @@ execute:
 ::: {.callout-note}
 ## Take-home message
 
-Non-neuronal scRNA-seq of the whole human brain resolves at least two astrocyte states. **Astrocyte_2** is concentrated in cortex and hippocampus and expresses a mature, neuroprotective-support transcriptional program—not a generic housekeeping glial signature.
+Non-neuronal scRNA-seq of the whole human brain resolves at least two astrocyte states. **Astrocyte_2** is concentrated in cortex and hippocampus and expresses a mature, neuroprotective-support transcriptional program, not a generic housekeeping glial signature.
 :::
 
 From a systems-neuroscience perspective, this pattern is biologically coherent: *SLC1A2* (EAAT2) mediates glutamate uptake at synapses; *AQP4* and *SLC4A4* support water and bicarbonate homeostasis at the glial limitans; *SPARCL1* (Hevin) participates in synapse formation and maturation; and *APOE*/*CLU* link glial biology to lipid handling and stress response pathways relevant to Alzheimer's disease genetics.
@@ -126,8 +126,8 @@ Top differential genes (Astrocyte_2 vs Astrocyte reference):
 | 2 | *ADGRV1* | 81.6 | 19.5 |
 | 3 | *SPARCL1* | 79.0 | 15.3 |
 | 4 | *SLC4A4* | 78.7 | 17.1 |
-| 5 | *WIF1* | — | — |
-| 6 | *EPHA6* | — | — |
+| 5 | *WIF1* | - | - |
+| 6 | *EPHA6* | - | - |
 
 Validation genes with higher expression in Astrocyte_2: *SLC1A2*, *AQP4*, *SPARCL1*, *SLC4A4*.
 
@@ -140,7 +140,7 @@ Top GO Biological Process terms among Astrocyte_2 marker genes (Enrichr, adjuste
 | Term | Adj. *P* | Lead genes |
 |------|----------|------------|
 | Regulation of astrocyte differentiation | 0.010 | *EPHA4*, *ID2*, *HES5* |
-| Regulation of long-term synaptic potentiation | 0.039 | — |
+| Regulation of long-term synaptic potentiation | 0.039 | - |
 | Regulation of amyloid-beta formation | 0.039 | *EPHA4*, *APOE*, *CLU* |
 | Negative regulation of long-term synaptic potentiation | 0.042 | *EPHA4*, *APOE* |
 | Positive regulation of neuron projection development | 0.054 | *NTRK3*, *APOE*, … |

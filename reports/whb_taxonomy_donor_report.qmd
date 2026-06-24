@@ -1,0 +1,115 @@
+---
+title: "WHB Taxonomy Validation and Donor Stratification of Astrocyte_2"
+subtitle: "Conference Summary - Neuro-AI Brain Cell Atlas (Notebook 05)"
+author:
+  - "Neuro-AI Brain Cell Atlas Project"
+date: today
+date-format: "MMMM D, YYYY"
+keywords:
+  - Allen taxonomy
+  - donor metadata
+  - astrocyte heterogeneity
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-fold: true
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Conference abstract
+
+**Background.** Manual Astrocyte_2 labels from Leiden clustering require validation against Allen's official taxonomy. Donor age and sex effects on AD support scores were hypothesized but untested with linked metadata.
+
+**Methods.** We joined Allen WHB `donor.csv` and `cell_metadata.csv` onto the 50k subsample via `library_label` → `donor_label`, mapped cells to official taxonomy (`whb_subcluster`, `whb_supercluster`) via `cluster_alias` and parent-term hierarchy, stratified AD support score by age/sex, and plotted pseudo-spatial x/y coordinates from Allen dissection metadata.
+
+**Results.** After hierarchical taxonomy fix, **100%** of 50,000 cells received supercluster labels. Astrocyte_2 and canonical Astrocyte both map to official **Astrocyte** supercluster (mapping rate ~**40%** each), confirming distinct states within the same lineage. The 50k subsample spans only **4 donors** (ages 28–60; 2M/2F); a weak negative age–score correlation is statistically significant but severely underpowered (cell-level pseudoreplication). Pseudo-spatial plots show non-random Astrocyte_2 distribution in tissue coordinates.
+
+**Conclusions.** Official taxonomy validates Astrocyte_2 identity. Donor covariate inference requires the full WHB atlas (NB03: 368 donors) or donor-level mixed models.
+
+---
+
+## Significance
+
+::: {.callout-note}
+## Take-home message
+
+Astrocyte_2 is a genuine astrocyte state not pericyte or microglia contamination by Allen supercluster reference. The 4-donor subsample is adequate for discovery but not for age/sex epidemiology.
+:::
+
+---
+
+## Methods summary
+
+| Step | Detail |
+|------|--------|
+| **Metadata** | `donor.csv`, `cell_metadata.csv`, WHB-taxonomy CSVs |
+| **Join keys** | `library_label` → `donor_label`; `cluster_alias` → taxonomy |
+| **Taxonomy chain** | subcluster → cluster → supercluster via `parent_term_label` |
+| **Stratification** | AD score vs `donor_age_years`, `donor_sex` |
+| **Spatial** | x/y pseudo-coordinates from Allen cell metadata |
+| **Reproducibility** | `notebooks/05_whb_taxonomy_and_donor_stratification.ipynb` |
+
+---
+
+## Taxonomy validation
+
+| Manual label | WHB supercluster | Mapping rate |
+|--------------|------------------|--------------|
+| **Astrocyte_2** | **Astrocyte** | **~0.40** |
+| Astrocyte | Astrocyte | ~0.40 |
+| Oligodendrocyte | Oligodendrocyte | ~0.50 |
+
+Astrocyte_2 occupies distinct WHB **subclusters** (e.g., URL_311_11, URL_311_12) from canonical Astrocyte - same lineage, different state.
+
+---
+
+## Donor metadata caveat
+
+| Metric | Value |
+|--------|-------|
+| Astrocyte_2 cells | 4,081 |
+| Unique donors in subsample | **4** |
+| Ages | 28, 42, 50, 60 years |
+| Sex | 2M / 2F |
+
+::: {.callout-caution}
+Cell-level age/sex tests with *n* = 4 donors violate independence. Use donor-level mixed models on full atlas or SEA-AD (84 donors, NB06).
+:::
+
+---
+
+## Pipeline position (NB01–05)
+
+| NB | Contribution |
+|----|--------------|
+| NB01 | Astrocyte_2 discovery; forebrain enrichment |
+| NB02 | 99.9% Q4 neuroprotective score |
+| NB03 | Regional + 368-donor AD score stratification |
+| NB04 | Donor-held-out scVI classifier |
+| **NB05** | **Official taxonomy confirmation; donor metadata join** |
+
+---
+
+## Limitations
+
+- 4-donor subsample for age/sex
+- ~40% subcluster mapping reflects subsampling/boundary cells
+- Dissection x/y coordinates, not MERFISH spatial transcriptomics
+
+---
+
+## References
+
+1. Allen WHB taxonomy documentation; Notebooks 01–04 reports

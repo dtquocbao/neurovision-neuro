@@ -1,0 +1,29 @@
+{
+  "cohort": "SEA-AD MTG astrocytes (NB06)",
+  "n_cells": 67419,
+  "n_donors": 84,
+  "disease_summary": {
+    "normal": { "median": 0.300, "n": 32830 },
+    "dementia": { "median": 0.197, "n": 34589 }
+  },
+  "adnc_medians": {
+    "Not AD": 0.302,
+    "Low": 0.264,
+    "Intermediate": 0.310,
+    "High": 0.199
+  },
+  "braak_medians": {
+    "Braak 0": 0.31,
+    "Braak II": 0.29,
+    "Braak III": 0.28,
+    "Braak IV": 0.25,
+    "Braak V": 0.22,
+    "Braak VI": 0.20
+  },
+  "astrocyte_2_like_fraction": {
+    "normal": 0.28,
+    "dementia": 0.22,
+    "high_adnc": 0.21
+  },
+  "notes": "Reference medians from NB06 SEA-AD analysis; overlaid on user uploads for comparison."
+}

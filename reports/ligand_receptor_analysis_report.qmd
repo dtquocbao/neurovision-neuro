@@ -1,0 +1,124 @@
+---
+title: "Astrocyte_2 Ligand-Receptor Communication with Cortical and Hippocampal Neurons"
+subtitle: "Conference Summary - Neuro-AI Brain Cell Atlas (Notebook 07)"
+author:
+  - "Neuro-AI Brain Cell Atlas Project"
+date: today
+date-format: "MMMM D, YYYY"
+keywords:
+  - ligand-receptor
+  - LIANA
+  - astrocyte-neuron
+  - synaptic support
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-fold: true
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Conference abstract
+
+**Background.** NB01–06 established Astrocyte_2 as a forebrain-enriched, AD-linked, disease-declining astrocyte state with synaptic-support markers (*SLC1A2*, *SPARCL1*, *APOE*). The specific **ligand-receptor axes** connecting Astrocyte_2 to cortical and hippocampal neurons were unknown.
+
+**Methods.** We integrated WHB **non-neuronal** (50k subsample: Astrocyte + Astrocyte_2) with **neuronal** supertype labels from `WHB-10Xv3-Neurons-log2.h5ad`, filtered to forebrain neuron supertypes (hippocampal CA1-3, dentate gyrus, upper/deep intratelencephalic, MGE/CGE interneurons), and ran **LIANA** `rank_aggregate` (CellPhoneDB, NATMI, Connectome, logFC, SingleCellSignalR consensus). We extracted Astrocyte_2 → neuron and neuron → Astrocyte_2 interactions and compared Astrocyte_2 vs canonical Astrocyte outgoing signaling.
+
+**Results.** **176** total Astrocyte_2 interactions; **79** Astrocyte_2 → neuron. Top outgoing pairs: **EFNA5 → EPHA6** (hippocampal CA1-3, DG; synapse refinement) and **APOE → SORL1** (cortex, hippocampus; lipid transport). Neuron → Astrocyte_2: **CNTN4** and bidirectional **EFNA5–EPHA** axes. Astrocyte_2 vs Astrocyte showed near-complete LR divergence. **APOE → SORL1** (Astrocyte_2 → Astrocyte) ranked as the strongest single interaction in the dataset (magnitude rank **6.406**).
+
+**Conclusions.** Astrocyte_2 communicates with forebrain neurons through ephrin-mediated synapse refinement and APOE–SORL1 lipid signaling, mechanistic bridges from marker discovery (NB01) to disease loss (NB06).
+
+---
+
+## Significance
+
+::: {.callout-note}
+## Take-home message
+
+NB07 closes the mechanistic loop: *APOE* and *SLC1A2* are not only DE markers and SHAP features, they participate in ranked ligand-receptor communication with hippocampal and cortical neurons.
+:::
+
+---
+
+## Methods summary
+
+| Step | Detail |
+|------|--------|
+| **Non-neuronal** | `brain_non_neuronal_50k_annotated_umap.h5ad` (Astrocyte + Astrocyte_2) |
+| **Neuronal** | `WHB-10Xv3-Neurons-log2.h5ad` + Allen supertype labels |
+| **Combined** | ~50k cells; 8 cell groups (2 astrocyte + 6 neuron supertypes) |
+| **LIANA** | `rank_aggregate` multi-method consensus |
+| **Focus genes** | *SPARCL1*, *SLC1A2*, *APOE*, *AQP4*, *CLU*, *CST3* |
+| **Reproducibility** | `notebooks/07_ligand_receptor_analysis.ipynb` |
+
+---
+
+## Top Astrocyte_2 → Neuron interactions
+
+| Rank | Ligand | Receptor | Target neuron | Magnitude | Biology |
+|------|--------|----------|---------------|-----------|---------|
+| 1 | EFNA5 | EPHA6 | Hippocampal CA1-3 | 0.088 | Synapse refinement |
+| 2 | EFNA5 | EPHA6 | Hippocampal DG | 0.098 | Synapse refinement |
+| 4–8 | APOE | SORL1 | DG, upper IT, CA1-3, deep IT | 0.157–0.184 | Lipid transport |
+| 7 | EFNA5 | EPHA6 | MGE interneuron | 0.169 | Synapse refinement |
+
+---
+
+## Top Neuron → Astrocyte_2 interactions
+
+| Ligand | Receptor | Source neuron | Biology |
+|--------|----------|---------------|---------|
+| CNTN4 | - | Upper IT, CGE, MGE interneurons | Adhesion/signaling |
+| EFNA5 | EPHA6 | Deep IT | Bidirectional ephrin |
+| SLIT2/SLIT3 | - | Hippocampal CA1-3, DG | Axon guidance |
+
+---
+
+## Cross-notebook convergence (NB01 → NB07)
+
+| Finding | Notebook | Method |
+|---------|----------|--------|
+| *APOE*, *SLC1A2*, *SPARCL1* top markers | NB01 | DE |
+| 99.9% Q4 neuroprotective score | NB02 | Gene scoring |
+| 96% Q4 AD score; donor replication | NB03 | Stratification |
+| SHAP recovers *SLC1A2*, *APOE* | NB04 | scVI + MLP |
+| Official Astrocyte supercluster | NB05 | Taxonomy |
+| Score loss in AD; APOE4 effect | NB06 | SEA-AD |
+| **APOE→SORL1, EFNA5→EPHA6 top LR** | **NB07** | **LIANA** |
+
+---
+
+## Limitations
+
+- In silico LR inference not protein-level validation
+- Neurons and astrocytes from separate WHB matrices (cross-batch)
+- Neurotypical donors; AD brains may alter EFNA5/APOE signaling
+- *SPARCL1* absent from consensus LR database (receptor partners unknown)
+- No spatial co-localization (MERFISH needed)
+
+---
+
+## Future directions
+
+1. MERFISH validation of Astrocyte_2–neuron co-localization in cortex/hippocampus
+2. SEA-AD LR comparison (disease-altered communication)
+3. *SPARCL1* receptor identification (Hevin–synaptic partners)
+4. Cross-dataset scVI for unified astrocyte–neuron object
+
+---
+
+## References
+
+1. Dimitrov D et al. LIANA+ framework. *Nature Communications* 2022
+2. Notebooks 01–06 reports; Allen WHB neuronal + non-neuronal atlases

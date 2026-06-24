@@ -1,0 +1,117 @@
+---
+title: "Loss of Neuroprotective Astrocyte Programs in Alzheimer's Disease"
+subtitle: "Conference Summary - Neuro-AI Brain Cell Atlas (Notebook 06)"
+author:
+  - "Neuro-AI Brain Cell Atlas Project"
+date: today
+date-format: "MMMM D, YYYY"
+keywords:
+  - SEA-AD
+  - Alzheimer's disease
+  - astrocyte
+  - APOE4
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-fold: true
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Conference abstract
+
+**Background.** NB01–05 identified a forebrain-enriched neuroprotective astrocyte program (Astrocyte_2) in neurotypical Allen WHB data. Whether this program persists or declines in Alzheimer's disease remained untested.
+
+**Methods.** We applied the NB02/03 **AD support score** (6-gene panel) to **67,419 astrocyte nuclei** from SEA-AD MTG (~1.38M total nuclei; 84 donors; `backed="r"`). We compared normal vs dementia, stratified by **Braak stage**, **ADNC**, and **APOE4 status**, correlated with **Continuous Pseudo-progression Score**, and classified Astrocyte_2-like cells using the NB04 score threshold (Q3 = 0.628).
+
+**Results.** Dementia astrocytes showed lower AD scores (median **0.197** vs **0.300** normal; Mann–Whitney *p* ≈ 4×10⁻¹⁷⁷; *r* ≈ −0.126). Scores declined across Braak stages (Kruskal *p* < 0.001) and were lowest in **High ADNC** (median **0.199**). **APOE4 carriers** scored significantly lower. Astrocyte_2-like fraction dropped **~22%** relative from normal to dementia; High ADNC showed lowest Astrocyte_2-like fraction (**21%** vs **28%** normal).
+
+**Conclusions.** The WHB neuroprotective astrocyte program generalizes to SEA-AD and is progressively lost with AD pathology, a convergence across score, pathology stage, genetics, and cell-fraction metrics.
+
+---
+
+## Significance
+
+::: {.callout-note}
+## Take-home message
+
+This is the first external disease-cohort validation in the pipeline. Four independent metrics (median score, Braak gradient, APOE4 effect, Astrocyte_2-like fraction) all point the same direction: **neuroprotective astrocyte biology declines in AD.**
+:::
+
+---
+
+## Methods summary
+
+| Step | Detail |
+|------|--------|
+| **Cohort** | SEA-AD MTG snRNA-seq (Gabitto et al., *Nat Neurosci* 2024) |
+| **Subset** | Subclass == Astrocyte (~67k nuclei, 84 donors) |
+| **Score** | Same 6-gene AD panel as NB02/03 |
+| **Clinical** | ADNC, Braak, APOE4, cognitive status, pseudo-progression |
+| **Classification** | Score threshold Q3 = 0.628 → Astrocyte_2-like |
+| **Reproducibility** | `notebooks/06_seaad_disease_comparison.ipynb` |
+
+---
+
+## Key results
+
+### Normal vs dementia
+
+| Group | Median AD score | *n* |
+|-------|-----------------|-----|
+| Normal | **0.300** | 32,830 |
+| Dementia | **0.197** | 34,589 |
+| Median difference | **−0.102** | - |
+| Rank-biserial *r* | **−0.126** | - |
+
+### ADNC gradient
+
+| ADNC | Median score | *n* |
+|------|--------------|-----|
+| Not AD | 0.302 | 7,457 |
+| Low | 0.264 | 9,525 |
+| Intermediate | 0.310 | 16,371 |
+| **High** | **0.199** | 34,066 |
+
+### Astrocyte_2-like fraction
+
+| Condition | Astrocyte_2-like |
+|-----------|------------------|
+| Normal | ~28% |
+| Dementia | ~22% (−22% relative) |
+| High ADNC | ~21% |
+
+---
+
+## Professor's assessment
+
+**Strengths:** First disease validation; multi-metric convergence; APOE4 connects genetics to astrocyte biology.
+
+**Caveats:** Cell-level pseudoreplication (67k cells, 84 donors); score scales differ between WHB and SEA-AD; threshold proxy ≠ cross-dataset scVI transfer; **MTG only** - Astrocyte_2 was hippocampus-enriched in WHB.
+
+---
+
+## Limitations
+
+- Pseudoreplication at cell level
+- Threshold-based Astrocyte_2-like labeling (not NB04 classifier transfer)
+- Score not directly comparable across cohorts (different normalization)
+- Middle temporal gyrus only; no hippocampal SEA-AD region
+
+---
+
+## References
+
+1. Gabitto MI, et al. Integrated multimodal cell atlas of Alzheimer's disease. *Nature Neuroscience* 2024
+2. Notebooks 01–05 reports; SEA-AD data via CELLxGENE / Allen S3
