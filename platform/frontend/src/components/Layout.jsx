@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Brain, BookOpen, Activity, Upload, GitBranch, Info, Layers, Heart } from "lucide-react";
+import ApiBanner from "./ApiBanner";
 
 const links = [
   { to: "/", label: "Home", icon: Brain, end: true },
@@ -46,6 +47,7 @@ export default function Layout({ children }) {
           </nav>
         </div>
       </header>
+      <ApiBanner />
       <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
     </div>
   );

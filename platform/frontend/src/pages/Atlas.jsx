@@ -153,7 +153,25 @@ export default function Atlas() {
             </div>
           )}
 
-          {error && <div className="card text-red-400">{error}</div>}
+          {loading && (
+            <div className="card text-slate-400">Loading atlas data…</div>
+          )}
+          {error && (
+            <div className="card space-y-2 text-red-400">
+              <p>{error}</p>
+              <p className="text-sm text-slate-500">
+                Backend health check:{" "}
+                <a
+                  href="https://rockydant-neurovision-neuro-api.hf.space/api/health"
+                  className="text-blue-400 underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  HF Space /api/health
+                </a>
+              </p>
+            </div>
+          )}
           {!loading && !error && (
             <div className="card p-2">
               <UMAPViewer

@@ -35,7 +35,7 @@ Push to `main` (with changes under `platform/`) deploys **both** backend and fro
 | Secret | `VERCEL_TOKEN` | Vercel token |
 | Secret | `VERCEL_ORG_ID` | Vercel org/team ID |
 | Secret | `VERCEL_PROJECT_ID` | Vercel project ID |
-| Secret | `VITE_API_URL` | `https://YOUR-USER-neurovision-neuro-api.hf.space` |
+| Secret | `VITE_API_URL` | `https://YOUR-USER-neurovision-neuro-api.hf.space` (HF backend URL for Vercel `/api` proxy) |
 | Variable | `HF_SPACE_ID` | `YOUR-USER/neurovision-neuro-api` |
 
 **Hugging Face Space → Settings → Variables** (set once, not in GitHub):
@@ -137,13 +137,30 @@ Subsequent production deploys are handled by **GitHub Actions** (section 0). You
 
 ### Environment variables
 
-Set `VITE_API_URL` as a **GitHub secret** (used at build time by Actions).  
-Optionally mirror it in Vercel → Settings → Environment Variables for manual deploys.
+Set `VITE_API_URL` to your **Hugging Face Space URL** (no trailing slash):
+
+| Where | Purpose |
+|-------|---------|
+| GitHub Actions secret | CI deploy + `vercel-build` proxy |
+| Vercel → Settings → Environment Variables | Required if Vercel builds from Git directly |
+
+At build time, `scripts/apply-vercel-proxy.mjs` writes `vercel.json` so browser requests to `/api/*` are **proxied server-side** to HF. The frontend never calls HF directly, so **CORS is not required** for atlas/LR pages.
 
 ### Verify
 
-Open your Vercel URL → Atlas and L-R pages should load data from HF.  
-Check browser DevTools → Network: requests go to `hf.space/api/...`.
+Open your Vercel URL → Atlas and L-R pages should load data.  
+Check browser DevTools → Network: requests should go to `your-app.vercel.app/api/atlas` (status 200, JSON body with `cells`).
+
+### Troubleshooting: “No cells to display”
+
+| Cause | Fix |
+|-------|-----|
+| `VITE_API_URL` missing on Vercel | Add `https://rockydant-neurovision-neuro-api.hf.space` (your HF URL) in Vercel env + GitHub secret, then **Redeploy** |
+| Old deploy without API proxy | Pull latest `platform/frontend` (includes `vercel-build` script) and redeploy |
+| HF Space sleeping | Open `/api/health` on HF first; cold start can take 1–2 min |
+| Backend OK but UI empty | DevTools → Network → `/api/atlas` — if response is HTML, proxy is misconfigured |
+
+Quick backend check: [rockydant-neurovision-neuro-api.hf.space/api/health](https://rockydant-neurovision-neuro-api.hf.space/api/health)
 
 ---
 
@@ -161,14 +178,16 @@ Check browser DevTools → Network: requests go to `hf.space/api/...`.
 
 ```
 Browser (Vercel)
-    │  VITE_API_URL
+    │  GET /api/atlas  (same origin)
     ▼
-HF Space :7860  FastAPI
+Vercel rewrite  →  HF Space :7860  FastAPI
     ├── data/umap_embeddings.csv
     ├── data/liana_results.csv
     ├── data/seaad_reference.json
     └── models/  (optional, NB04)
 ```
+
+`VITE_API_URL` is only used at **build time** to configure the Vercel proxy (`vercel.json`), not baked into the client bundle.
 
 ---
 

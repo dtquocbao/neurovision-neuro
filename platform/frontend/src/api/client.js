@@ -1,9 +1,37 @@
 import axios from "axios";
 
+/** Same-origin /api — proxied to the backend by Vite (dev) or Vercel (prod). */
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "",
+  baseURL: "",
   timeout: 120000,
 });
+
+function formatApiError(err) {
+  if (err.response?.data?.detail) {
+    const d = err.response.data.detail;
+    return typeof d === "string" ? d : JSON.stringify(d);
+  }
+  if (err.code === "ERR_NETWORK") {
+    return "Cannot reach the API. If this is a Vercel deploy, set VITE_API_URL to your HF Space URL and redeploy.";
+  }
+  if (typeof err.response?.data === "string" && err.response.data.includes("<!DOCTYPE")) {
+    return "API returned HTML instead of JSON — Vercel is not proxying /api to the backend. Set VITE_API_URL and redeploy.";
+  }
+  return err.message || "API request failed";
+}
+
+client.interceptors.response.use(
+  (res) => {
+    const data = res.data;
+    if (typeof data === "string" && data.trimStart().startsWith("<!")) {
+      throw new Error(
+        "API returned HTML instead of JSON — configure VITE_API_URL on Vercel and redeploy."
+      );
+    }
+    return res;
+  },
+  (err) => Promise.reject(new Error(formatApiError(err)))
+);
 
 export async function fetchHealth() {
   const { data } = await client.get("/api/health");
@@ -12,6 +40,9 @@ export async function fetchHealth() {
 
 export async function fetchAtlas(params = {}) {
   const { data } = await client.get("/api/atlas", { params });
+  if (!Array.isArray(data?.cells)) {
+    throw new Error("Invalid atlas response — backend may be unreachable.");
+  }
   return data;
 }
 
