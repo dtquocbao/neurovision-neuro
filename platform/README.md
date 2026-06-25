@@ -52,6 +52,12 @@ npm run dev
 
 App: http://localhost:5173 (proxies `/api` → backend)
 
+## Deployment
+
+**GitHub Actions** deploys on push to `main` (`platform/**` changes).
+
+Guide: [`DEPLOY.md`](DEPLOY.md) — secrets, HF Space, Vercel project setup
+
 ## API endpoints
 
 | Method | Path | Description |

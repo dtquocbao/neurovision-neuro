@@ -181,7 +181,9 @@ cd platform/backend && pip install -r requirements.txt && uvicorn main:app --rel
 cd platform/frontend && npm install && npm run dev
 ```
 
-**Routes:** Atlas · AD score · Cell classifier (scVI+MLP) · Disease comparison · L-R explorer
+**Routes:** Atlas · Findings · AD score · Classifier · Disease · L-R explorer
+
+**Deploy:** Vercel + Hugging Face via GitHub Actions — see [`platform/DEPLOY.md`](platform/DEPLOY.md)
 
 ---
 
