@@ -25,8 +25,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY main.py .
 COPY pipelines/ ./pipelines/
 COPY data/ ./data/
-# Optional: copy NB04 models if present at build time (see DEPLOY.md)
-COPY models/ ./models/
+# NB04 weights are optional (gitignored); classifier returns 503 without them
+RUN mkdir -p models
 
 EXPOSE 7860
 
